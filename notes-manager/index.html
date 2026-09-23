@@ -18,6 +18,11 @@
       h1, h2, p { margin: 0; }
       h1 { font-size: 24px; font-weight: 500; }
       .subtle { color: #666872; font-size: 14px; }
+      .header-tools { display: flex; align-items: center; gap: 18px; }
+      .global-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      .global-action { padding: 9px 13px; color: #171719; background: #fff; border: 1px solid #c9c9ce; font-size: 14px; }
+      .global-action.primary { color: #fff; background: #4056a1; border-color: #4056a1; }
+      .global-action:disabled { cursor: wait; opacity: .55; }
       .workspace { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 0; }
       aside { padding: 24px 0; border-right: 1px solid #dedee2; }
       .aside-head { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 16px; }
@@ -60,6 +65,7 @@
       .empty { padding: 20px; color: #777983; font-size: 13px; }
       @media (max-width: 760px) {
         header { padding: 18px 20px; }
+        .header-tools { align-items: flex-start; flex-direction: column; gap: 12px; }
         .workspace { grid-template-columns: 1fr; }
         aside { border-right: 0; border-bottom: 1px solid #dedee2; }
         .note-list { display: flex; overflow-x: auto; }
@@ -77,7 +83,13 @@
     <div class="desk">
       <header>
         <div class="brand"><span class="mark" aria-hidden="true">Π</span><h1>Notes Desk</h1></div>
-        <p class="subtle">Local editorial workspace</p>
+        <div class="header-tools">
+          <p class="subtle">Local editorial workspace</p>
+          <div class="global-actions" aria-label="Site publishing actions">
+            <button id="publish-local" class="global-action" type="button">Publish locally</button>
+            <button id="publish-github" class="global-action primary" type="button">Publish to GitHub Pages</button>
+          </div>
+        </div>
       </header>
       <div class="workspace">
         <aside aria-label="Notes">
@@ -88,7 +100,7 @@
           <section class="editor" aria-labelledby="editor-title">
             <div class="editor-top">
               <div><h2 id="editor-title">Choose a note</h2><p class="notice" id="notice" role="status"></p></div>
-              <div class="actions"><button id="delete-note" type="button" disabled>Delete</button><button id="save-note" class="save-button" type="button" disabled>Save note</button><button id="publish-note" type="button" disabled>Save &amp; rebuild</button></div>
+              <div class="actions"><button id="delete-note" type="button" disabled>Delete</button><button id="save-note" class="save-button" type="button" disabled>Save note</button></div>
             </div>
             <form id="note-form" hidden>
               <div class="field-grid">
@@ -106,10 +118,11 @@
       </div>
     </div>
     <script>
-      const state = { notes: [], current: null, isNew: false }
+      const state = { notes: [], current: null, isNew: false, dirty: false }
       const $ = (id) => document.getElementById(id)
       const fields = ['title', 'slug', 'dek', 'date', 'draft', 'body']
-      const buttons = [$('save-note'), $('publish-note'), $('delete-note')]
+      const editorButtons = [$('save-note'), $('delete-note')]
+      const globalButtons = [$('publish-local'), $('publish-github')]
 
       function escapeHtml(value) { return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])) }
       function previewMarkdown(value) {
@@ -123,14 +136,14 @@
         }).join('')
       }
       function setNotice(message, error = false) { $('notice').textContent = message; $('notice').style.color = error ? '#9d3e34' : '#4056a1' }
-      function setEditing(enabled) { $('note-form').hidden = !enabled; $('preview').hidden = !enabled; buttons.forEach((button) => { button.disabled = !enabled }) }
+      function setEditing(enabled) { $('note-form').hidden = !enabled; $('preview').hidden = !enabled; editorButtons.forEach((button) => { button.disabled = !enabled }) }
       function fill(note) {
-        state.current = note.slug; state.isNew = false; setEditing(true)
+        state.current = note.slug; state.isNew = false; state.dirty = false; setEditing(true)
         fields.forEach((field) => { $(field).value = note[field] ?? ''; if (field === 'draft') $(field).checked = note.draft })
         $('editor-title').textContent = note.title; updatePreview(); renderList(); setNotice('')
       }
       function blank() {
-        state.current = null; state.isNew = true; setEditing(true)
+        state.current = null; state.isNew = true; state.dirty = true; setEditing(true)
         $('title').value = ''; $('slug').value = ''; $('dek').value = ''; $('date').value = new Date().toISOString().slice(0, 10); $('draft').checked = true; $('body').value = ''
         $('editor-title').textContent = 'New note'; updatePreview(); renderList(); setNotice('Draft — save when ready')
       }
@@ -141,18 +154,34 @@
       async function loadNotes() { const response = await fetch('/api/notes'); state.notes = await response.json(); renderList(); if (state.notes[0]) fill(state.notes[0]) }
       async function loadNote(slug) { const response = await fetch('/api/notes/' + encodeURIComponent(slug)); if (response.ok) fill(await response.json()) }
       function formData() { return { title: $('title').value.trim(), slug: $('slug').value.trim(), dek: $('dek').value.trim(), date: $('date').value, draft: $('draft').checked, body: $('body').value } }
-      async function save(rebuild) {
+      async function save() {
         const data = formData(); if (!data.title || !data.slug || !data.dek || !data.date || !data.body.trim()) { setNotice('Title, summary, date, and body are required.', true); return }
-        buttons.forEach((button) => { button.disabled = true }); setNotice(rebuild ? 'Saving and rebuilding…' : 'Saving…')
+        editorButtons.forEach((button) => { button.disabled = true }); setNotice('Saving note…')
         const response = await fetch('/api/notes' + (state.isNew ? '' : '/' + encodeURIComponent(state.current)), { method: state.isNew ? 'POST' : 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         if (!response.ok) { setNotice(await response.text(), true); setEditing(true); return }
-        const note = await response.json(); state.isNew = false; state.current = note.slug
-        if (rebuild) { const build = await fetch('/api/rebuild', { method: 'POST' }); if (!build.ok) { setNotice('Saved, but the site rebuild failed.', true); setEditing(true); return } }
-        await loadNotes(); await loadNote(note.slug); setNotice(rebuild ? 'Saved and published locally.' : 'Saved.')
+        const note = await response.json(); state.isNew = false; state.current = note.slug; state.dirty = false
+        await loadNotes(); await loadNote(note.slug); setNotice(data.draft ? 'Saved as a draft.' : 'Saved. Publish locally when ready.')
+      }
+      async function rebuildSite() {
+        if (state.dirty) { setNotice('Save this note before publishing locally.', true); return }
+        globalButtons[0].disabled = true; setNotice('Publishing local site…')
+        const response = await fetch('/api/rebuild', { method: 'POST' })
+        globalButtons[0].disabled = false
+        if (!response.ok) { setNotice('The local site build failed.', true); return }
+        setNotice('Local site published.')
+      }
+      async function publishGithub() {
+        if (state.dirty) { setNotice('Save this note before publishing to GitHub Pages.', true); return }
+        globalButtons[1].disabled = true; setNotice('Publishing to GitHub Pages…')
+        const response = await fetch('/api/publish/github', { method: 'POST' })
+        const message = await response.text()
+        globalButtons[1].disabled = false
+        if (!response.ok) { setNotice(message || 'GitHub Pages publishing failed.', true); return }
+        setNotice(message || 'Published to GitHub Pages.')
       }
       async function remove() { if (!state.current || !confirm('Delete this note?')) return; const response = await fetch('/api/notes/' + encodeURIComponent(state.current), { method: 'DELETE' }); if (!response.ok) { setNotice(await response.text(), true); return } state.current = null; await loadNotes(); if (!state.notes.length) { blank(); } setNotice('Note deleted.') }
       function updatePreview() { const body = $('body').value; $('word-count').textContent = (body.match(/\S+/g) || []).length + ' words'; $('preview-body').innerHTML = previewMarkdown(body) }
-      $('new-note').addEventListener('click', blank); $('save-note').addEventListener('click', () => save(false)); $('publish-note').addEventListener('click', () => save(true)); $('delete-note').addEventListener('click', remove); $('body').addEventListener('input', updatePreview); $('title').addEventListener('input', () => { if (state.isNew && !$('slug').value) $('slug').value = $('title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') });
+      $('new-note').addEventListener('click', blank); $('save-note').addEventListener('click', save); $('publish-local').addEventListener('click', rebuildSite); $('publish-github').addEventListener('click', publishGithub); $('delete-note').addEventListener('click', remove); $('note-form').addEventListener('input', () => { state.dirty = true }); $('body').addEventListener('input', updatePreview); $('title').addEventListener('input', () => { if (state.isNew && !$('slug').value) $('slug').value = $('title').value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') });
       loadNotes().catch((error) => setNotice(error.message, true))
     </script>
   </body>

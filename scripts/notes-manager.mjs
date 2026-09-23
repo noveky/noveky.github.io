@@ -6,6 +6,7 @@ import { promisify } from 'node:util'
 import { fileURLToPath } from 'node:url'
 
 const execFileAsync = promisify(execFile)
+const git = '/usr/bin/git'
 const root = fileURLToPath(new URL('..', import.meta.url))
 const notesDirectory = join(root, 'content', 'notes')
 const managerPage = await readFile(new URL('../notes-manager/index.html', import.meta.url))
@@ -41,6 +42,7 @@ function send(response, status, body, contentType = 'application/json; charset=u
 }
 async function jsonBody(request) { let body = ''; for await (const chunk of request) body += chunk; return JSON.parse(body) }
 function noteSource(note) { return `---\ntitle: ${note.title}\ndek: ${note.dek}\ndate: ${note.date}${note.draft ? '\ndraft: true' : ''}\n---\n\n${note.body.trim()}\n` }
+function commandMessage(error) { return error?.stderr?.trim() || error?.stdout?.trim() || error?.message || 'Command failed.' }
 
 const server = createServer(async (request, response) => {
   try {
@@ -73,8 +75,26 @@ const server = createServer(async (request, response) => {
       await execFileAsync('/usr/local/bin/npm', ['run', 'build'], { cwd: root, maxBuffer: 10 * 1024 * 1024 })
       return send(response, 200, { ok: true })
     }
+    if (request.method === 'POST' && url.pathname === '/api/publish/github') {
+      await execFileAsync('/usr/local/bin/npm', ['run', 'note:check'], { cwd: root, maxBuffer: 10 * 1024 * 1024 })
+      await execFileAsync(git, ['add', '--', 'content/notes'], { cwd: root, maxBuffer: 10 * 1024 * 1024 })
+
+      let hasChanges = false
+      try {
+        await execFileAsync(git, ['diff', '--cached', '--quiet', '--', 'content/notes'], { cwd: root })
+      } catch (error) {
+        if (error.code !== 1) throw error
+        hasChanges = true
+      }
+
+      if (!hasChanges) return send(response, 200, 'No unpublished note changes.')
+
+      await execFileAsync(git, ['commit', '--only', '-m', 'Publish notes from Notes Desk', '--', 'content/notes'], { cwd: root, maxBuffer: 10 * 1024 * 1024 })
+      await execFileAsync(git, ['push', 'origin', 'main'], { cwd: root, maxBuffer: 10 * 1024 * 1024 })
+      return send(response, 200, 'Published to GitHub Pages. Deployment is now building.')
+    }
     send(response, 404, 'Not found')
-  } catch (error) { console.error(error); send(response, 500, error instanceof Error ? error.message : 'Server error') }
+  } catch (error) { console.error(error); send(response, 500, commandMessage(error)) }
 })
 
 server.listen(port, '127.0.0.1', () => console.log(`Notes Desk listening at http://127.0.0.1:${port}`))

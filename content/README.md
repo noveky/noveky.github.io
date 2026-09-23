@@ -20,8 +20,12 @@ npm run note:check
 npm run build
 ```
 
-The local production service picks up the new note after the build. Commit and
-push the Markdown file when it is ready for GitHub Pages.
+In Notes Desk, `Save note` writes the Markdown file without rebuilding. The
+global `Publish locally` action rebuilds the local production site. The global
+`Publish to GitHub Pages` action validates, commits only `content/notes/`, and
+pushes `main`; the GitHub Actions deployment then publishes the site.
+
+The local production service also picks up the new note after `npm run build`.
 
 ## Frontmatter
 
