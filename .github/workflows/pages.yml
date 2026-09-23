@@ -35,7 +35,13 @@ jobs:
         run: npm run build
 
       - name: Add SPA fallback
-        run: cp dist/index.html dist/404.html
+        run: |
+          cp dist/index.html dist/404.html
+          for route in +            blog +            blog/a-place-for-notes +            blog/the-smallest-useful-system +            blog/against-the-first-draft
+          do
+            mkdir -p "dist/$route"
+            cp dist/index.html "dist/$route/index.html"
+          done
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
