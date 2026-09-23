@@ -1,4 +1,3 @@
-import '@fontsource-variable/stix-two-text'
 import '@fontsource-variable/libre-baskerville'
 import { createApp } from 'vue'
 import App from './App.vue'

@@ -1,5 +1,5 @@
 :root {
-  font-family: 'STIX Two Text Variable', 'STIX Two Text', Georgia, serif;
+  font-family: var(--roman);
   color: oklch(0.14 0 0);
   background: oklch(1 0 0);
   font-synthesis: none;
