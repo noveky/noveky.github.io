@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import SiteMasthead from './SiteMasthead.vue'
-import type { BlogPost } from './posts'
+import type { BlogPost } from './content'
 
 defineProps<{
   post: BlogPost
@@ -22,9 +22,7 @@ defineProps<{
         <p class="post-dek">{{ post.dek }}</p>
       </header>
 
-      <article class="post-body">
-        <p v-for="paragraph in post.paragraphs" :key="paragraph">{{ paragraph }}</p>
-      </article>
+      <article class="post-body" v-html="post.contentHtml"></article>
     </main>
   </div>
 </template>

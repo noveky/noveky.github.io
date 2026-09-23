@@ -489,6 +489,69 @@ a:focus-visible {
   margin: 0 0 1.6em;
 }
 
+.post-body h2,
+.post-body h3 {
+  margin: 2.2em 0 0.7em;
+  font-family: var(--roman);
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.post-body h2 {
+  font-size: 1.35em;
+}
+
+.post-body h3 {
+  font-size: 1.15em;
+}
+
+.post-body a {
+  color: var(--primary);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.post-body ul,
+.post-body ol {
+  margin: 0 0 1.6em;
+  padding-left: 1.35em;
+}
+
+.post-body li + li {
+  margin-top: 0.45em;
+}
+
+.post-body blockquote {
+  margin: 2em 0;
+  padding-left: 1.25em;
+  color: var(--muted);
+  border-left: 2px solid var(--rule);
+  font-style: italic;
+}
+
+.post-body code {
+  padding: 0.12em 0.3em;
+  color: var(--ink);
+  background: var(--surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78em;
+}
+
+.post-body pre {
+  overflow-x: auto;
+  margin: 2em 0;
+  padding: 1.1em 1.2em;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+}
+
+.post-body pre code {
+  padding: 0;
+  background: transparent;
+  font-size: 0.72em;
+  line-height: 1.6;
+}
+
 @media (max-width: 760px) {
   .site-shell {
     padding-inline: 20px;

@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import BlogIndex from './BlogIndex.vue'
 import BlogPost from './BlogPost.vue'
-import { findBlogPost } from './posts'
+import { findBlogPost } from './content'
 import './styles.css'
 
 const path = window.location.pathname.replace(/\/+$/, '') || '/'

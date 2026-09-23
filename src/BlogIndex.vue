@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { blogPosts } from './posts'
+import { blogPosts } from './content'
 import SiteMasthead from './SiteMasthead.vue'
 </script>
 

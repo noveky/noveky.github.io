@@ -5,15 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "typecheck": "vue-tsc --noEmit"
+    "build": "npm run note:check && vue-tsc --noEmit && vite build && npm run pages:routes",
+    "typecheck": "vue-tsc --noEmit",
+    "note:new": "node scripts/new-note.mjs",
+    "note:check": "node scripts/check-notes.mjs",
+    "pages:routes": "node scripts/create-pages-routes.mjs",
+    "notes:desk": "node scripts/notes-manager.mjs"
   },
   "dependencies": {
     "@fontsource-variable/libre-baskerville": "^5.3.0",
     "@lucide/vue": "^1.25.0",
+    "markdown-it": "^15.0.2",
     "vue": "^3.5.40"
   },
   "devDependencies": {
+    "@types/markdown-it": "^14.2.0",
     "@vitejs/plugin-vue": "^6.0.8",
     "typescript": "^5.9.3",
     "vite": "^8.1.5",
