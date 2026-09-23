@@ -172,6 +172,7 @@
       }
       async function publishGithub() {
         if (state.dirty) { setNotice('Save this note before publishing to GitHub Pages.', true); return }
+        if (!window.confirm('Publish saved notes to GitHub Pages?')) return
         globalButtons[1].disabled = true; setNotice('Publishing to GitHub Pages…')
         const response = await fetch('/api/publish/github', { method: 'POST' })
         const message = await response.text()
