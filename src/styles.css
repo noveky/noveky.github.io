@@ -337,7 +337,7 @@ a:focus-visible {
 
 .blog-index,
 .blog-post {
-  width: min(100%, 760px);
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -474,7 +474,7 @@ a:focus-visible {
 }
 
 .post-body {
-  width: min(100%, 650px);
+  width: 100%;
   padding-top: 54px;
   font-family: var(--roman);
   font-size: 18px;
