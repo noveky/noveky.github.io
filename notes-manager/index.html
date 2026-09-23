@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Notes Desk — Noveky</title>
     <style>
-      :root { color: #171719; background: #fff; font-family: Georgia, 'Times New Roman', serif; }
+      :root { color: #171719; background: #fff; font-family: Georgia, 'Times New Roman', serif; font-size: 16px; }
       * { box-sizing: border-box; }
       body { margin: 0; min-width: 320px; }
       button, input, textarea { font: inherit; }
@@ -15,29 +15,29 @@
       .brand { display: flex; align-items: baseline; gap: 10px; }
       .mark { color: #4056a1; font-size: 24px; }
       h1, h2, p { margin: 0; }
-      h1 { font-size: 21px; font-weight: 500; }
-      .subtle { color: #666872; font-size: 13px; }
+      h1 { font-size: 24px; font-weight: 500; }
+      .subtle { color: #666872; font-size: 14px; }
       .workspace { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 0; }
       aside { padding: 24px 0; border-right: 1px solid #dedee2; }
       .aside-head { display: flex; justify-content: space-between; align-items: center; padding: 0 20px 16px; }
-      .aside-head h2 { font-size: 14px; font-weight: 500; }
+      .aside-head h2 { font-size: 16px; font-weight: 500; }
       .new-button, .save-button { color: #fff; background: #4056a1; border: 1px solid #4056a1; }
-      .new-button { padding: 6px 10px; font-size: 12px; }
+      .new-button { padding: 7px 11px; font-size: 14px; }
       .note-list { margin: 0; padding: 0; list-style: none; }
       .note-list button { width: 100%; display: block; padding: 13px 20px; color: inherit; background: transparent; border: 0; border-top: 1px solid #eeeeef; text-align: left; }
       .note-list button:hover, .note-list button.active { background: #f5f5f7; }
-      .note-title { display: block; overflow: hidden; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
-      .note-meta { display: block; margin-top: 5px; color: #777983; font-size: 12px; }
+      .note-title { display: block; overflow: hidden; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
+      .note-meta { display: block; margin-top: 5px; color: #777983; font-size: 13px; }
       main { min-width: 0; overflow: auto; }
       .editor { width: min(100%, 980px); margin: 0 auto; padding: 42px 42px 80px; }
       .editor-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 34px; }
-      .editor-top h2 { font-size: 32px; font-weight: 400; }
+      .editor-top h2 { font-size: 36px; font-weight: 400; }
       .actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-      .actions button { padding: 8px 12px; border: 1px solid #c9c9ce; background: #fff; font-size: 13px; }
-      .actions .save-button { border-color: #4056a1; }
+      .actions button { padding: 9px 13px; border: 1px solid #c9c9ce; background: #fff; font-size: 15px; }
+      .actions .save-button { color: #fff; background: #4056a1; border-color: #4056a1; }
       .actions button:disabled { cursor: wait; opacity: .55; }
       .field-grid { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 20px; }
-      label { display: grid; gap: 8px; margin-bottom: 20px; color: #555761; font-size: 12px; }
+      label { display: grid; gap: 8px; margin-bottom: 20px; color: #555761; font-size: 14px; }
       input, textarea { width: 100%; color: #171719; background: #fff; border: 1px solid #c9c9ce; border-radius: 0; outline: none; }
       input { padding: 10px 11px; }
       textarea { min-height: 390px; resize: vertical; padding: 14px; line-height: 1.6; }
@@ -48,7 +48,7 @@
       .body-label span { display: flex; justify-content: space-between; }
       .preview { margin-top: 34px; padding-top: 26px; border-top: 1px solid #dedee2; }
       .preview h3 { margin: 0 0 18px; font-size: 13px; font-weight: 500; color: #666872; }
-      .preview-body { max-width: 650px; font-size: 17px; line-height: 1.8; }
+      .preview-body { max-width: 650px; font-size: 18px; line-height: 1.8; }
       .preview-body h1, .preview-body h2, .preview-body h3 { margin: 1.5em 0 .55em; font-weight: 400; }
       .preview-body h1 { font-size: 30px; }
       .preview-body h2 { font-size: 24px; }
