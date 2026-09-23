@@ -9,6 +9,7 @@ const execFileAsync = promisify(execFile)
 const root = fileURLToPath(new URL('..', import.meta.url))
 const notesDirectory = join(root, 'content', 'notes')
 const managerPage = await readFile(new URL('../notes-manager/index.html', import.meta.url))
+const romanFont = await readFile(new URL('../node_modules/@fontsource-variable/libre-baskerville/files/libre-baskerville-latin-wght-normal.woff2', import.meta.url))
 const port = Number(process.env.PORT ?? 15177)
 
 function parseNote(file, source) {
@@ -45,6 +46,7 @@ const server = createServer(async (request, response) => {
   try {
     const url = new URL(request.url, `http://${request.headers.host}`)
     const segments = url.pathname.split('/').filter(Boolean).map(decodeURIComponent)
+    if (request.method === 'GET' && url.pathname === '/fonts/libre-baskerville-latin-wght-normal.woff2') return send(response, 200, romanFont, 'font/woff2')
     if (request.method === 'GET' && url.pathname === '/') return send(response, 200, managerPage, 'text/html; charset=utf-8')
     if (request.method === 'GET' && url.pathname === '/api/notes') return send(response, 200, await listNotes())
     if (segments[0] === 'api' && segments[1] === 'notes' && segments[2]) {
