@@ -15,6 +15,7 @@
   --focus: oklch(0.54 0.16 250);
   --content-width: 1180px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --roman: 'Libre Baskerville Variable', 'Libre Baskerville', Georgia, serif;
 }
 
 * {
@@ -59,6 +60,7 @@ a:focus-visible {
   height: 72px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid var(--rule);
 }
 
@@ -77,6 +79,24 @@ a:focus-visible {
   font-size: 22px;
   font-weight: 560;
   line-height: 1;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.site-nav a {
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 180ms var(--ease-out);
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+  color: var(--primary);
 }
 
 .introduction {
@@ -315,6 +335,160 @@ a:focus-visible {
   transform: translate(3px, -3px);
 }
 
+.blog-shell {
+  max-width: 960px;
+}
+
+.blog-index,
+.blog-post {
+  width: min(100%, 760px);
+  margin: 0 auto;
+}
+
+.blog-introduction {
+  padding: 92px 0 76px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.section-kicker {
+  margin: 0 0 18px;
+  color: var(--primary);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.blog-introduction h1,
+.post-header h1 {
+  margin: 0;
+  font-family: var(--roman);
+  font-size: clamp(48px, 8vw, 78px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.blog-lede {
+  max-width: 38ch;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.55;
+}
+
+.post-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-list li {
+  border-bottom: 1px solid var(--rule);
+}
+
+.post-link {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 24px;
+  gap: 32px;
+  align-items: start;
+  padding: 34px 0 38px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 220ms var(--ease-out);
+}
+
+.post-link:hover {
+  background: var(--surface);
+}
+
+.post-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.post-meta time {
+  font-variant-numeric: oldstyle-nums;
+}
+
+.post-copy h2 {
+  margin: -4px 0 10px;
+  font-family: var(--roman);
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.post-copy p {
+  max-width: 52ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.post-arrow {
+  color: var(--primary);
+  font-size: 23px;
+  line-height: 1;
+  transition: transform 220ms var(--ease-out);
+}
+
+.post-link:hover .post-arrow {
+  transform: translate(3px, -3px);
+}
+
+.blog-post {
+  padding: 54px 0 112px;
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 180ms var(--ease-out);
+}
+
+.back-link:hover {
+  color: var(--primary);
+}
+
+.post-header {
+  padding: 84px 0 60px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.post-header .post-meta {
+  flex-direction: row;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.post-dek {
+  max-width: 50ch;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 20px;
+  line-height: 1.55;
+}
+
+.post-body {
+  width: min(100%, 650px);
+  padding-top: 54px;
+  font-family: var(--roman);
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.post-body p {
+  margin: 0 0 1.6em;
+}
+
 @media (max-width: 760px) {
   .site-shell {
     padding-inline: 20px;
@@ -322,6 +496,49 @@ a:focus-visible {
 
   .masthead {
     height: 64px;
+  }
+
+  .blog-introduction {
+    padding: 64px 0 52px;
+  }
+
+  .blog-lede {
+    font-size: 17px;
+  }
+
+  .post-link {
+    grid-template-columns: 1fr 20px;
+    gap: 16px;
+    padding: 28px 0 32px;
+  }
+
+  .post-link .post-meta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .post-copy h2 {
+    margin-top: 0;
+    font-size: 24px;
+  }
+
+  .blog-post {
+    padding-top: 36px;
+  }
+
+  .post-header {
+    padding: 58px 0 44px;
+  }
+
+  .post-dek {
+    font-size: 18px;
+  }
+
+  .post-body {
+    padding-top: 40px;
+    font-size: 17px;
+    line-height: 1.75;
   }
 
   .introduction {

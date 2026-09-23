@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { ArrowUpRight, Flower2, MessageSquareText, RefreshCw, Sparkles } from '@lucide/vue'
 import LineStudy from './LineStudy.vue'
+import SiteMasthead from './SiteMasthead.vue'
 import { hostedServices, type HostedService, type ServiceStatus } from './services'
 
 const publicServiceOrigin = 'https://noveky.cpolar.io'
@@ -66,12 +67,7 @@ onMounted(checkServices)
 
 <template>
   <div class="site-shell">
-    <header class="masthead">
-      <a class="identity" href="/" aria-label="Noveky home">
-        <span class="identity-mark" aria-hidden="true">Π</span>
-        <span>noveky</span>
-      </a>
-    </header>
+    <SiteMasthead current="home" />
 
     <main>
       <section class="introduction" aria-labelledby="page-title">
