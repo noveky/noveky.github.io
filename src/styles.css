@@ -335,10 +335,6 @@ a:focus-visible {
   transform: translate(3px, -3px);
 }
 
-.blog-shell {
-  max-width: 960px;
-}
-
 .blog-index,
 .blog-post {
   width: min(100%, 760px);
